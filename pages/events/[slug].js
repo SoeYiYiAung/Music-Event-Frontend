@@ -9,6 +9,11 @@ export default function Event({evt}) {
   const deleteEvent = (e) => {
     console.log('delete')
   }
+
+  const imageUrl = evt.image
+  ? `${API_URL}${evt.image.formats.large?.url || evt.image.url}`
+  : '/images/event-default.png';
+
   return (
     <Layout>
           <h1>My Event</h1>
@@ -25,12 +30,14 @@ export default function Event({evt}) {
             </div>
 
             <span>
-              {evt.date} at {evt.time}
+              {new Date(evt.date).toLocaleDateString('en-US')} at {evt.time}
             </span>
             <h1>{evt.name}</h1>
             {evt.image && (
               <div className={styles.image}>
-                <Image src={evt.image} width={960} height={600} />
+                {/* <Image src={evt.image} width={960} height={600} /> */}
+                <Image src={imageUrl} width={960} height={600} unoptimized/>
+
               </div>
             )}
 
@@ -50,7 +57,7 @@ export default function Event({evt}) {
 }
 
 export async function getStaticPaths() {
-  const res = await fetch(`${API_URL}/api/event`)
+  const res = await fetch(`${API_URL}/events`)
   const events = await res.json()
 
   const paths = events.map((evt) => ({
@@ -64,7 +71,11 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params: { slug } }) {
-  const res = await fetch(`${API_URL}/api/event/${slug}`)
+  // const res = await fetch(`${API_URL}/api/event/${slug}`)
+
+  const res = await fetch(`${API_URL}/events?slug=${slug}`)
+  console.log("srr",res)
+
   const events = await res.json()
 
   return {

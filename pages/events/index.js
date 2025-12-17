@@ -25,7 +25,9 @@ export default function EventsPage({events} ) {
 }
 
 export async function getServerSideProps(){
-  const res = await fetch(`${API_URL}/api/event`)
+  // const res = await fetch(`${API_URL}/api/event`) //Nextjs Json
+  const res = await fetch(`${API_URL}/events?_sort=date:ASC`) //Strapi Backend
+
   const events = await res.json()
   console.log("events",events)
   return {
